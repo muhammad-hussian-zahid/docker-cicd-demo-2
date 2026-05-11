@@ -2,7 +2,7 @@
 set -e
 
 # Variables
-IMAGE_NAME="your-dockerhub-username/docker-cicd-demo"
+IMAGE_NAME="hussain968/docker-cicd-demo"
 BUILD_NUMBER=${BUILD_NUMBER:-latest}
 GIT_COMMIT=${GIT_COMMIT:-$(git rev-parse HEAD)}
 

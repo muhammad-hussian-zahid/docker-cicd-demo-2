@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE = 'your-dockerhub-username/docker-cicd-demo'
+        DOCKER_IMAGE = 'hussain968/docker-cicd-demo'
         DOCKER_CREDENTIALS = 'dockerhub-credentials'
         BUILD_NUMBER = "${env.BUILD_NUMBER}"
     }
@@ -36,14 +36,6 @@ pipeline {
             steps {
                 echo 'Running security scan...'
                 sh '''
-                    # Install Trivy if not present
-                    if ! command -v trivy &> /dev/null; then
-                        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-                        echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
-                        sudo apt-get update
-                        sudo apt-get install trivy -y
-                    fi
-                    
                     # Scan the image
                     trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${BUILD_NUMBER}
                 '''
