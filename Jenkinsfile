@@ -101,3 +101,30 @@ pipeline {
         }
     }
 }
+        
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Deploying to production EC2...'
+                script {
+                    // Add EC2 SSH credentials to Jenkins first
+                    sshagent(['ec2-ssh-key']) {
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no ubuntu@your-ec2-ip << 'ENDSSH'
+                                # Pull and deploy latest image
+                                docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
+                                docker stop docker-cicd-prod || true
+                                docker rm docker-cicd-prod || true
+                                docker run -d --name docker-cicd-prod -p 80:3000 --restart unless-stopped ${DOCKER_IMAGE}:${BUILD_NUMBER}
+                                
+                                # Health check
+                                sleep 10
+                                curl -f http://localhost/health
+ENDSSH
+                        '''
+                    }
+                }
+            }
+        }

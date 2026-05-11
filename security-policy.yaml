@@ -1,0 +1,28 @@
+# Security policy for Docker CI/CD pipeline
+security:
+  vulnerability_scanning:
+    enabled: true
+    fail_on_critical: false  # Set to true to fail build on critical vulnerabilities
+    severity_levels:
+      - HIGH
+      - CRITICAL
+    
+  container_compliance:
+    enabled: true
+    checks:
+      - non_root_user
+      - no_secrets_in_image
+      - minimal_base_image
+      - health_check_present
+    
+  registry_security:
+    enabled: true
+    scan_on_push: true
+    quarantine_vulnerable_images: false
+
+notifications:
+  security_alerts:
+    enabled: true
+    channels:
+      - email
+      - slack  # Configure webhook URL
